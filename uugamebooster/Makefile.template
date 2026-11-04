@@ -33,7 +33,7 @@ TAR_CMD=$(HOST_TAR) -C $(1)/ $(TAR_OPTIONS)
 define Package/uugamebooster
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=@(aarch64||arm||mipsel) +kmod-tun +iptables-nft \
+  DEPENDS:=@(aarch64||arm||mipsel) +kmod-tun +kmod-ipt-nat +iptables-nft \
     +libstdcpp +libgcc +libuci +libubox +libubus +libjson-c +libprotobuf-c +libmnl +nftables
   TITLE:=NetEase UU Game Booster
   URL:=https://uu.163.com
