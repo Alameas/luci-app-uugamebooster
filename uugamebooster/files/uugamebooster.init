@@ -14,7 +14,7 @@ firewall_rule() {
 	json_add_string type rule
 	json_add_string src '*'
 	[ "$1" = forward ] && json_add_string dest '*'
-	json_add_string device tun163
+	json_add_string device 'tun16*'
 	json_add_string direction "$2"
 	json_add_string proto all
 	json_add_string target ACCEPT
