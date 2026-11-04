@@ -1,0 +1,14 @@
+#!/bin/sh
+
+lan_device="$(ubus call network.interface.lan status 2>/dev/null | jsonfilter -e '@.l3_device' 2>/dev/null)"
+[ -n "$lan_device" ] || lan_device="$(uci -q get network.lan.device 2>/dev/null)"
+[ -n "$lan_device" ] || lan_device=br-lan
+mac="$(cat "/sys/class/net/$lan_device/address" 2>/dev/null)"
+[ -n "$mac" ] || exit 1
+
+model="$(ubus call system board 2>/dev/null | jsonfilter -e '@.model' 2>/dev/null)"
+[ -n "$model" ] || model="$(cat /tmp/sysinfo/model 2>/dev/null)"
+[ -n "$model" ] || model=OpenWrt
+
+mkdir -p /var/tmp/uu || exit 1
+printf 'productname=%s\nethaddr=%s\nhardversion=VER.A\nbootversion=100\nmanucode=%s\n' "$model" "$mac" "$mac" > /var/tmp/uu/h3c_info

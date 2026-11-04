@@ -52,6 +52,8 @@ define Package/uugamebooster/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/uuplugin $(1)/usr/bin/uugamebooster
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/xuplugin-guardian $(1)/usr/bin/xuplugin-guardian
+	$(if $(filter jd-%,$(UU_TYPE)),$(INSTALL_BIN) $(CURDIR)/files/haiapi $(1)/usr/bin/haiapi)
+	$(if $(filter h3c-%,$(UU_TYPE)),$(INSTALL_BIN) $(CURDIR)/files/h3c-info $(1)/usr/bin/h3c-info)
 
 	$(INSTALL_DIR) $(1)/usr/share/uugamebooster
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/uu.conf $(1)/usr/share/uugamebooster/uu.conf

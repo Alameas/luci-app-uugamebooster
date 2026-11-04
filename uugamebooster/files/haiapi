@@ -1,0 +1,57 @@
+#!/bin/sh
+
+. /usr/share/libubox/jshn.sh || exit 1
+
+[ "$#" -eq 2 ] && [ "$1" = call ] || {
+	printf '%s\n' 'haiapi: expected call and a JSON request' >&2
+	exit 1
+}
+
+system_get_system_info() {
+	local lan_device mac model
+
+	lan_device="$(ubus call network.interface.lan status 2>/dev/null | jsonfilter -e '@.l3_device' 2>/dev/null)"
+	[ -n "$lan_device" ] || lan_device="$(uci -q get network.lan.device 2>/dev/null)"
+	[ -n "$lan_device" ] || lan_device=br-lan
+	mac="$(cat "/sys/class/net/$lan_device/address" 2>/dev/null)"
+	[ -n "$mac" ] || {
+		printf 'haiapi: cannot read MAC address for %s\n' "$lan_device" >&2
+		return 1
+	}
+
+	model="$(ubus call system board 2>/dev/null | jsonfilter -e '@.model' 2>/dev/null)"
+	[ -n "$model" ] || model="$(cat /tmp/sysinfo/model 2>/dev/null)"
+	[ -n "$model" ] || model=OpenWrt
+
+	json_init
+	json_add_array result
+	json_add_object ''
+	json_add_object data
+	json_add_string mac "$mac"
+	json_add_string model "$model"
+	json_close_object
+	json_add_string code 0x0
+	json_close_object
+	json_close_array
+	json_dump
+}
+
+hwnat_success() {
+	json_init
+	json_add_array result
+	json_add_object ''
+	json_add_string code 0x0
+	json_close_object
+	json_close_array
+	json_dump
+}
+
+method="$(jsonfilter -s "$2" -e '@.payload[0].method' 2>/dev/null)"
+case "$method" in
+	system.get_system_info) system_get_system_info ;;
+	hwnat.disable_hwnat|hwnat.enable_hwnat) hwnat_success ;;
+	*)
+		printf 'haiapi: unsupported method: %s\n' "${method:-<invalid>}" >&2
+		exit 1
+		;;
+esac

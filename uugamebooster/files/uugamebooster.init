@@ -27,6 +27,8 @@ start_service() {
 	config_get_bool enabled "config" "enabled" "0"
 	[ "$enabled" -eq "1" ] || return 1
 
+	[ ! -x /usr/bin/h3c-info ] || /usr/bin/h3c-info || return 1
+
 	procd_open_instance "$CONF"
 
 	procd_set_param command "$PROG" "$UU_CONF"
