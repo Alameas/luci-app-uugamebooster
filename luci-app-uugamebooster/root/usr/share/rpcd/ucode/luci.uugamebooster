@@ -1,0 +1,37 @@
+import { request, error } from "rtnl";
+
+const RTM_GETRULE = 34;
+const NLM_F_DUMP = 0x300;
+const AF_INET = 2;
+
+return {
+	"luci.uugamebooster": {
+		devices: {
+			call: function() {
+				let rules = request(RTM_GETRULE, NLM_F_DUMP, { family: AF_INET });
+				if (type(rules) != "array") {
+					die(`Unable to read routing rules: ${error()}`);
+				}
+
+				let addresses = [];
+				for (let rule in rules) {
+					let table = rule.table;
+
+					if (table < 160 || table > 169 ||
+						rule.fwmark == null ||
+						sprintf("%x", rule.fwmark) != sprintf("%d", table) ||
+						(rule.fwmask != null && rule.fwmask != rule.fwmark)) {
+						continue;
+					}
+
+					let src = match(rule.src || "", /^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/32$/);
+					if (src && index(addresses, src[1]) == -1) {
+						push(addresses, src[1]);
+					}
+				}
+
+				return { addresses };
+			}
+		}
+	}
+};
