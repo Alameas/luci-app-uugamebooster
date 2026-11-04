@@ -1,56 +1,69 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:98
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:137
 msgid "Enable"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:34
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:36
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:48
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:50
 msgid "UU GameAcc"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:91
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:130
 msgid "UU Game Accelerator"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:91
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:130
 msgid "A Paid Game Acceleration service"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:95
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:113
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:134
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:162
 msgid "Collecting data..."
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:106
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:112
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:145
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:160
 msgid "Device"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:107
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:113
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:147
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:162
 msgid "Acceleration"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:67
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:100
 msgid "Accelerating"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:63
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:67
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:96
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:100
 msgid "Not accelerating"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:119
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:168
 msgid "Devices"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:59
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:65
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:94
+msgid "Offline"
+msgstr ""
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:92
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:98
 msgid "Unknown"
 msgstr ""
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:117
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:166
 msgid "No devices."
+msgstr ""
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:146
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:161
+msgid "Device type"
+msgstr ""
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:152
+msgid "(Default)"
 msgstr ""

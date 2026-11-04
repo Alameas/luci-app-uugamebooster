@@ -34,7 +34,7 @@ define Package/uugamebooster
   SECTION:=net
   CATEGORY:=Network
   DEPENDS:=@(aarch64||arm||mipsel) +kmod-tun +iptables-nft +kmod-ipt-nat \
-    +libstdcpp +libgcc
+    +libstdcpp +libgcc +libuci +libubox +libjson-c
   TITLE:=NetEase UU Game Booster
   URL:=https://uu.163.com
 endef
@@ -44,6 +44,10 @@ define Package/uugamebooster/description
 endef
 
 define Build/Compile
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) \
+		-fPIC -shared -o $(PKG_BUILD_DIR)/libuugameboosterhelper.so \
+		$(wildcard $(CURDIR)/src/*.c) \
+		-luci -lubox -ljson-c -ldl
 endef
 
 define Package/uugamebooster/conffiles
@@ -55,6 +59,8 @@ define Package/uugamebooster/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/uuplugin $(1)/usr/bin/uugamebooster
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/xuplugin-guardian $(1)/usr/bin/xuplugin-guardian
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libuugameboosterhelper.so $(1)/usr/lib/libuugameboosterhelper.so
 	$(if $(filter jd-%,$(UU_TYPE)),$(INSTALL_BIN) $(CURDIR)/files/haiapi $(1)/usr/bin/haiapi)
 	$(if $(filter h3c-%,$(UU_TYPE)),$(INSTALL_BIN) $(CURDIR)/files/h3c-info $(1)/usr/bin/h3c-info)
 

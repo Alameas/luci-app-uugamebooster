@@ -11,6 +11,29 @@ const callServiceList = rpc.declare({ object: 'service', method: 'list', params:
 const callDevices = rpc.declare({ object: 'luci.uugamebooster', method: 'devices', reject: true });
 const callDHCPLeases = rpc.declare({ object: 'luci-rpc', method: 'getDHCPLeases', params: ['family'], reject: true });
 
+const deviceTypes = {
+	ally: 'ROG Ally',
+	android: 'Android',
+	apple: 'Apple',
+	ios: 'iOS',
+	macos: 'macOS',
+	oculus: 'Oculus / Meta Quest',
+	pico: 'PICO',
+	ps4: 'PlayStation 4',
+	ps5: 'PlayStation 5',
+	ps_portal: 'PlayStation Portal',
+	steam_deck: 'Steam Deck',
+	switch: 'Nintendo Switch',
+	switch2: 'Nintendo Switch 2',
+	switch_cn: 'Nintendo Switch (CN)',
+	tmgz: 'Tamagotchi Uni',
+	vision_pro: 'Apple Vision Pro',
+	windows: 'Windows',
+	xbox: 'Xbox',
+	xboxs: 'Xbox Series S',
+	xboxx: 'Xbox Series X'
+};
+
 function readStatus() {
 	return Promise.all([
 		L.resolveDefault(callDHCPLeases(4), null),
@@ -38,6 +61,26 @@ function renderStatus(isRunning) {
 	return renderHTML;
 }
 
+function configuredType(mac) {
+	var sections = uci.sections('uugamebooster', 'device_type');
+	return sections.find(function(section) {
+		return (section.mac || '').toUpperCase() === mac;
+	});
+}
+
+function setDeviceType(mac, type) {
+	var section = configuredType(mac);
+	if (!type) {
+		if (section) {
+			uci.remove('uugamebooster', section['.name']);
+		}
+		return;
+	}
+	var id = section ? section['.name'] : uci.add('uugamebooster', 'device_type');
+	uci.set('uugamebooster', id, 'mac', mac);
+	uci.set('uugamebooster', id, 'type', type);
+}
+
 function updateStatus(table, data) {
 	var online = data[0] && data[0].dhcp_leases;
 	var accelerated = data[1] && data[1].addresses;
@@ -54,11 +97,10 @@ function updateStatus(table, data) {
 		var mac = row.getAttribute('data-device-mac');
 		var device = Array.isArray(online) && online.find(function(item) { return item.macaddr && item.macaddr.toUpperCase() === mac; });
 		var status = row.querySelector('.device-status');
-		row.style.display = Array.isArray(online) && !device ? 'none' : '';
 		if (!Array.isArray(online)) {
 			status.textContent = _('Unknown');
 		} else if (!device) {
-			return;
+			status.textContent = _('Offline');
 		} else if (!running) {
 			status.textContent = _('Not accelerating');
 		} else if (!Array.isArray(accelerated)) {
@@ -87,6 +129,12 @@ return view.extend({
 				hosts[mac] = { name: item.hostname || '', ip: item.ipaddr };
 			});
 		}
+		uci.sections('uugamebooster', 'device_type').forEach(function(section) {
+			if (section.mac) {
+				var mac = section.mac.toUpperCase();
+				hosts[mac] = hosts[mac] || { name: '', ip: '' };
+			}
+		});
 
 		m = new form.Map('uugamebooster', _('UU Game Accelerator'), _('A Paid Game Acceleration service'));
 		s = m.section(form.TypedSection);
@@ -104,17 +152,27 @@ return view.extend({
 		s.render = function() {
 			var rows = [ E('tr', { class: 'tr table-titles' }, [
 				E('th', { class: 'th' }, _('Device')),
+				E('th', { class: 'th' }, _('Device type')),
 				E('th', { class: 'th' }, _('Acceleration'))
 			]) ];
 			Object.keys(hosts).sort().forEach(function(mac) {
 				var host = hosts[mac];
+				var selected = configuredType(mac);
+				var options = [ E('option', { value: '', selected: !selected ? '' : null }, _('(Default)')) ];
+				Object.keys(deviceTypes).forEach(function(type) {
+					options.push(E('option', { value: type, selected: selected && selected.type === type ? '' : null }, deviceTypes[type]));
+				});
+				var select = E('select', { class: 'cbi-input-select', change: function(ev) {
+					setDeviceType(mac, ev.target.value);
+				} }, options);
 				rows.push(E('tr', { class: 'tr', 'data-device-mac': mac }, [
 					E('td', { class: 'td', 'data-title': _('Device') }, [ host.name || mac, E('br'), host.ip || '-' ]),
+					E('td', { class: 'td', 'data-title': _('Device type') }, select),
 					E('td', { class: 'td device-status', 'data-title': _('Acceleration') }, _('Collecting data...'))
 				]));
 			});
 			if (rows.length === 1) {
-				rows.push(E('tr', { class: 'tr placeholder' }, E('td', { class: 'td', colspan: 2 }, _('No devices.'))));
+				rows.push(E('tr', { class: 'tr placeholder' }, E('td', { class: 'td', colspan: 3 }, _('No devices.'))));
 			}
 			return E('div', { class: 'cbi-section' }, [ E('h3', _('Devices')),
 				E('table', { class: 'table', id: 'uu_devices' }, rows) ]);
