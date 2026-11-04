@@ -8,15 +8,20 @@ PKG_NAME:=uugamebooster
 PKG_VERSION:=14.11.2
 PKG_RELEASE:=2
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(ARCH).tar.gz
-PKG_SOURCE_URL:=https://uurouter.gdl.netease.com/uuplugin/openwrt-$(ARCH)/v$(PKG_VERSION)/uu.tar.gz?
+PKG_SOURCE=$(PKG_NAME)-$(PKG_VERSION)-$(UU_TYPE).tar.gz
+PKG_SOURCE_URL=https://uurouter.gdl.netease.com/uuplugin/$(UU_TYPE)/v$(PKG_VERSION)/uu.tar.gz?
+
 ifeq ($(ARCH),aarch64)
-  PKG_HASH:=947c121f66465b17228ac58d50ca47219cfeda0fd4b97827b0ab0eb391044c3e
+  UU_TYPE:=h3c-nx30pro
+  PKG_HASH:=cadd042abb5f3bfdd0e487a7fa61a1b18a2c2cb6d6d14c1e8e3c915bb81cee86
 else ifeq ($(ARCH),arm)
-  PKG_HASH:=4ab623f8777ef6be0115e0fa1911368624ab3b31394a91e7a07c381655cac836
+  UU_TYPE:=h3c-be18000
+  PKG_HASH:=5fa71e75152886d2a1ec14ca93d14ab79cbf674c5adfbf000f5495929446b76d
 else ifeq ($(ARCH),mipsel)
-  PKG_HASH:=eac7e37555cf436a17ba61aa47bdba4f9c58a6f915023d64ecea9e97911e7dbb
+  UU_TYPE:=jd-hr06
+  PKG_HASH:=902fa79d0477e59fcb1f3cc8daf691a390f0fc12f7acfd2f6e0b884e1a675115
 else ifeq ($(ARCH),x86_64)
+  UU_TYPE:=openwrt-x86_64
   PKG_HASH:=b770bdd5b78c900aec64c053cef31323d4943289eaf291acca22d990d3fa3680
 endif
 
@@ -32,6 +37,7 @@ define Package/uugamebooster
   SECTION:=net
   CATEGORY:=Network
   DEPENDS:=@(aarch64||arm||mipsel||x86_64) +kmod-tun +iptables-nft +kmod-ipt-nat
+  DEPENDS+=$(if $(filter openwrt-%,$(UU_TYPE)),,+libstdcpp +libgcc)
   TITLE:=NetEase UU Game Booster
   URL:=https://uu.163.com
 endef
