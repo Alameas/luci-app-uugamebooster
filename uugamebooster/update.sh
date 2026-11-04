@@ -13,7 +13,7 @@ URL="$(curl -fsSL 'https://router.uu.163.com/api/plugin?type=openwrt-x86_64' | j
 VERSION="$(echo "$URL" | sed -n 's|.*/v\([0-9][0-9.]*\)/uu\.tar\.gz.*|\1|p')"
 [ -n "$VERSION" ] || exit 1
 
-for ARCH in "aarch64" "arm" "mipsel" "x86_64"; do
+for ARCH in "aarch64" "arm" "mipsel"; do
 	UU_TYPE="$(awk -v arch="$ARCH" '
 		$0 ~ "^((else )?ifeq) \\(\\$\\(ARCH\\)," arch "\\)" { found = 1; next }
 		found && /^ *(else|endif)/ { exit }

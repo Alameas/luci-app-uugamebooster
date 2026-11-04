@@ -20,9 +20,6 @@ else ifeq ($(ARCH),arm)
 else ifeq ($(ARCH),mipsel)
   UU_TYPE:=jd-hr06
   PKG_HASH:=902fa79d0477e59fcb1f3cc8daf691a390f0fc12f7acfd2f6e0b884e1a675115
-else ifeq ($(ARCH),x86_64)
-  UU_TYPE:=openwrt-x86_64
-  PKG_HASH:=b770bdd5b78c900aec64c053cef31323d4943289eaf291acca22d990d3fa3680
 endif
 
 PKG_LICENSE:=Proprietary
@@ -36,8 +33,8 @@ TAR_CMD=$(HOST_TAR) -C $(1)/ $(TAR_OPTIONS)
 define Package/uugamebooster
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=@(aarch64||arm||mipsel||x86_64) +kmod-tun +iptables-nft +kmod-ipt-nat
-  DEPENDS+=$(if $(filter openwrt-%,$(UU_TYPE)),,+libstdcpp +libgcc)
+  DEPENDS:=@(aarch64||arm||mipsel) +kmod-tun +iptables-nft +kmod-ipt-nat \
+    +libstdcpp +libgcc
   TITLE:=NetEase UU Game Booster
   URL:=https://uu.163.com
 endef
