@@ -70,17 +70,6 @@ return view.extend({
 		o.default = o.disabled;
 		o.rmempty = false;
 
-		s = m.section(form.TypedSection);
-		s.anonymous = true;
-		s.render = function () {
-			return E('div', {class: 'cbi-section'}, [
-				E('p', [
-					E('img', {src: '/uugamebooster/uuios.png', height: '300'}),
-					E('img', {src: '/uugamebooster/uuandroid.png', height: '300'})
-				])
-			])
-		}
-
 		return m.render();
     }
 
