@@ -61,6 +61,7 @@ service_started() {
 }
 
 service_stopped() {
+	rm -f /var/run/uugamebooster.status
 	[ ! -x /sbin/fw4 ] || procd_set_config_changed firewall
 }
 
