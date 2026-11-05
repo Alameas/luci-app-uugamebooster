@@ -3,8 +3,10 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <libubox/ulog.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "capture.h"
 #include "vtable.h"
@@ -19,31 +21,27 @@ typedef int (*size_fn)(const void *self);
 typedef unsigned char *(*serialize_fn)(const void *self, void *data);
 
 struct capture {
-	const char *typeinfo;
+	const char *type_name;
 	parse_fn wrapper;
 	parse_fn parse;
 	size_fn size;
 	serialize_fn serialize;
 };
 
-static bool acc_parse(void *self, void *input);
-static bool stop_parse(void *self, void *input);
-static bool bound_parse(void *self, void *input);
+#define UU_CAPTURE_TYPES(X) \
+	X(UU_MESSAGE_ACC, Acc) \
+	X(UU_MESSAGE_STOP_ACC, StopAcc) \
+	X(UU_MESSAGE_BOUND_USER, BoundUser)
 
+#define DECLARE_PARSE(type, rtti) static bool type##_parse(void *self, void *input);
+UU_CAPTURE_TYPES(DECLARE_PARSE)
+#undef DECLARE_PARSE
+
+#define CAPTURE_ENTRY(type, rtti) [type] = { .type_name = #rtti, .wrapper = type##_parse },
 static struct capture captures[] = {
-	[UU_MESSAGE_ACC] = {
-		.typeinfo = "N18uu_router_messages3AccE",
-		.wrapper = acc_parse,
-	},
-	[UU_MESSAGE_STOP_ACC] = {
-		.typeinfo = "N18uu_router_messages7StopAccE",
-		.wrapper = stop_parse,
-	},
-	[UU_MESSAGE_BOUND_USER] = {
-		.typeinfo = "N18uu_router_messages9BoundUserE",
-		.wrapper = bound_parse,
-	},
+	UU_CAPTURE_TYPES(CAPTURE_ENTRY)
 };
+#undef CAPTURE_ENTRY
 
 static pthread_mutex_t output_lock = PTHREAD_MUTEX_INITIALIZER;
 static __thread bool inside;
@@ -83,33 +81,32 @@ static bool dispatch(enum uu_message_type type, void *self, void *input)
 	return parsed;
 }
 
-static bool acc_parse(void *self, void *input)
-{
-	return dispatch(UU_MESSAGE_ACC, self, input);
-}
-
-static bool stop_parse(void *self, void *input)
-{
-	return dispatch(UU_MESSAGE_STOP_ACC, self, input);
-}
-
-static bool bound_parse(void *self, void *input)
-{
-	return dispatch(UU_MESSAGE_BOUND_USER, self, input);
-}
+#define DEFINE_PARSE(type, rtti) \
+	static bool type##_parse(void *self, void *input) \
+	{ \
+		return dispatch(type, self, input); \
+	}
+UU_CAPTURE_TYPES(DEFINE_PARSE)
+#undef DEFINE_PARSE
+#undef UU_CAPTURE_TYPES
 
 static void install(struct capture *capture)
 {
-	void **vtable = uu_vtable_find(capture->typeinfo, VT_SERIALIZE);
+	char typeinfo[128];
+	void **vtable;
+
+	snprintf(typeinfo, sizeof(typeinfo), "N18uu_router_messages%zu%sE",
+		 strlen(capture->type_name), capture->type_name);
+	vtable = uu_vtable_find(typeinfo, VT_SERIALIZE);
 
 	if (!vtable) {
-		ULOG_ERR("UU capture: vtable not found: %s\n", capture->typeinfo);
+		ULOG_ERR("UU capture: vtable not found: %s\n", typeinfo);
 		return;
 	}
 
 	if (vtable[VT_PARSE] == vtable[VT_SIZE] || vtable[VT_SIZE] == vtable[VT_SERIALIZE] ||
 	    vtable[VT_PARSE] == vtable[VT_SERIALIZE]) {
-		ULOG_ERR("UU capture: unsupported vtable: %s\n", capture->typeinfo);
+		ULOG_ERR("UU capture: unsupported vtable: %s\n", typeinfo);
 		return;
 	}
 
@@ -118,7 +115,7 @@ static void install(struct capture *capture)
 	capture->serialize = (serialize_fn)vtable[VT_SERIALIZE];
 
 	if (!uu_vtable_patch(vtable, VT_PARSE, (void *)capture->wrapper)) {
-		ULOG_ERR("UU capture: vtable patch failed: %s\n", capture->typeinfo);
+		ULOG_ERR("UU capture: vtable patch failed: %s\n", typeinfo);
 	}
 }
 
@@ -128,7 +125,7 @@ void uu_capture_install(uu_capture_handler handler)
 	inside = true;
 
 	for (size_t i = 0; i < sizeof(captures) / sizeof(captures[0]); i++) {
-		if (captures[i].typeinfo) install(&captures[i]);
+		if (captures[i].type_name) install(&captures[i]);
 	}
 
 	inside = false;
