@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /usr/share/libubox/jshn.sh || exit 1
+. /usr/share/uugamebooster/device.sh || exit 1
 
 [ "$#" -eq 2 ] && [ "$1" = call ] || {
 	printf '%s\n' 'haiapi: expected call and a JSON request' >&2
@@ -8,20 +9,10 @@
 }
 
 system_get_system_info() {
-	local lan_device mac model
+	local mac model
 
-	lan_device="$(ubus call network.interface.lan status 2>/dev/null | jsonfilter -e '@.l3_device' 2>/dev/null)"
-	[ -n "$lan_device" ] || lan_device="$(uci -q get network.lan.device 2>/dev/null)"
-	[ -n "$lan_device" ] || lan_device=br-lan
-	mac="$(cat "/sys/class/net/$lan_device/address" 2>/dev/null)"
-	[ -n "$mac" ] || {
-		printf 'haiapi: cannot read MAC address for %s\n' "$lan_device" >&2
-		return 1
-	}
-
-	model="$(ubus call system board 2>/dev/null | jsonfilter -e '@.model' 2>/dev/null)"
-	[ -n "$model" ] || model="$(cat /tmp/sysinfo/model 2>/dev/null)"
-	[ -n "$model" ] || model=OpenWrt
+	mac="$(uu_device_mac)" || return 1
+	model="$(uu_device_model)"
 
 	json_init
 	json_add_array result

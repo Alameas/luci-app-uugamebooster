@@ -51,7 +51,6 @@ define Build/Compile
 endef
 
 define Package/uugamebooster/conffiles
-/.uuplugin_uuid
 /usr/share/uugamebooster/uu.conf
 endef
 
@@ -65,6 +64,7 @@ define Package/uugamebooster/install
 	$(if $(filter h3c-%,$(UU_TYPE)),$(INSTALL_BIN) $(CURDIR)/files/h3c-info $(1)/usr/bin/h3c-info)
 
 	$(INSTALL_DIR) $(1)/usr/share/uugamebooster
+	$(INSTALL_DATA) $(CURDIR)/files/device.sh $(1)/usr/share/uugamebooster/device.sh
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/uu.conf $(1)/usr/share/uugamebooster/uu.conf
 
 	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d
