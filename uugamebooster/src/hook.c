@@ -5,10 +5,11 @@
 #endif
 
 #include <dlfcn.h>
-#include <stdio.h>
+#include <libubox/ulog.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "capture.h"
 #include "devices.h"
 #include "helper.h"
 #include "uuenv.h"
@@ -48,8 +49,7 @@ size_t uu_find(const void *str, const char *needle, size_t pos, size_t len)
 
 			if (assign) {
 				assign((void *)str, merged);
-				printf("UUEnv device rules updated\n");
-				fflush(stdout);
+				ULOG_INFO("UUEnv device rules updated\n");
 			}
 
 			free(merged);
@@ -64,4 +64,5 @@ __attribute__((constructor)) static void hook_init(void)
 	if (!is_uugamebooster()) return;
 
 	uu_devices_load();
+	uu_capture_install(NULL);
 }

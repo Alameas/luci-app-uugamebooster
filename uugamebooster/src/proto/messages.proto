@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: GPL-3.0-only
+syntax = "proto2";
+package uu;
+
+message Device {
+  optional uint32 ip = 1;
+  optional string mac = 2;
+  optional string hostname = 3;
+  optional string type = 4;
+}
+
+message Acc {
+  optional string mid = 1;
+  optional Device deviceinfo = 2;
+  optional string username = 3;
+  optional string password = 4;
+  repeated bytes serverlist = 5;
+  repeated string sni_host = 6;
+  repeated string resolve_domain = 7;
+  repeated bytes routelist = 8;
+  optional string game_id = 9;
+  optional string mode = 14;
+  optional string game_env = 20;
+  repeated string user_env = 25;
+  optional bool dual_channel = 44;
+  optional string game = 54;
+  optional string zone = 55;
+}
+
+message StopAcc {
+  optional string mid = 1;
+  optional Device deviceinfo = 2;
+}
+
+message DeviceRecord {
+  optional string mac = 1;
+  optional string type = 2;
+}
+
+message AutoDeviceRecord {
+  optional string mac = 1;
+  optional string type = 2;
+  optional string hostname = 3;
+}
+
+message MeshDeviceRecord {
+  optional string mac = 1;
+  optional string type = 2;
+  optional uint32 ip = 3;
+}
+
+message SniIpKey {
+  optional string ip = 1;
+  optional int32 key = 2;
+}
+
+message BoundUser {
+  optional string mid = 1;
+  optional uint32 acced_num = 2;
+  repeated DeviceRecord device_whitelist = 3;
+  repeated string hostname_blacklist = 4;
+  repeated AutoDeviceRecord auto_device_whitelist = 5;
+  optional int32 sni_encrypt_port_offset = 6;
+  repeated SniIpKey sni_ip_keys = 7;
+  repeated string pre_acc_domains = 8;
+  optional string pre_acc_extra = 9;
+  optional string console_series = 10;
+  optional bool is_bound = 11;
+  repeated MeshDeviceRecord mesh_device_whitelist = 12;
+}
