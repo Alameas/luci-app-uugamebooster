@@ -1,0 +1,104 @@
+name: Build packages
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Publish Release after build'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - mipsel_24kc
+          - aarch64_cortex-a53
+          - arm_cortex-a7_neon-vfpv4
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build packages
+        uses: immortalwrt/gh-action-sdk@master
+        env:
+          ARCH: ${{ matrix.arch }}
+          PACKAGES: uugamebooster luci-app-uugamebooster
+          NO_SHFMT_CHECK: 1
+          V: s
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: uu-${{ matrix.arch }}
+          path: bin/packages/*
+          if-no-files-found: error
+
+  release:
+    name: Publish Release
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
+      (github.event_name == 'workflow_dispatch' && inputs.release == true)
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v8
+        with:
+          pattern: uu-*
+          path: downloaded
+
+      - name: Prepare release files
+        shell: bash
+        run: |
+          mkdir -p release
+          for dir in downloaded/uu-*; do
+            [ -d "$dir" ] || continue
+            arch="${dir#downloaded/uu-}"
+            for file in "$dir"/*/action/*.apk "$dir"/*/action/*.ipk; do
+              [ -f "$file" ] || continue
+              cp "$file" "release/${arch}-$(basename "$file")"
+            done
+          done
+
+          if ! compgen -G "release/*" > /dev/null; then
+            echo "No release files found"
+            exit 1
+          fi
+
+      - name: Generate Tag and Release Name
+        id: vars
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG="$(date -u '+%Y.%m.%d-%H%M')-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          fi
+
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
+          echo "CURRENT_DATE=$(date -u '+%Y-%m-%d %H:%M UTC')" >> "$GITHUB_OUTPUT"
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.TAG }}
+          name: Build - ${{ steps.vars.outputs.CURRENT_DATE }}
+          target_commitish: ${{ github.sha }}
+          files: release/*
+          fail_on_unmatched_files: true
