@@ -7,6 +7,15 @@ bool uu_messages_handle(enum uu_message_type type, const void *body, size_t leng
 {
 	bool updated;
 
+	if (type == UU_MESSAGE_BOUND_USER) {
+		Uu__BoundUser *bound = uu__bound_user__unpack(NULL, length, body);
+
+		if (!bound) return false;
+
+		uu__bound_user__free_unpacked(bound, NULL);
+		return true;
+	}
+
 	if (type == UU_MESSAGE_ACC) {
 		Uu__Acc *message = uu__acc__unpack(NULL, length, body);
 

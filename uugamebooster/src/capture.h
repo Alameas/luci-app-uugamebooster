@@ -9,6 +9,7 @@
 enum uu_message_type {
 	UU_MESSAGE_ACC = 6,
 	UU_MESSAGE_STOP_ACC = 8,
+	UU_MESSAGE_BOUND_USER = 16,
 };
 
 typedef bool (*uu_capture_handler)(enum uu_message_type type, const void *body, size_t length);

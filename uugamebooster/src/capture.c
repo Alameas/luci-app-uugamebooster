@@ -28,6 +28,7 @@ struct capture {
 
 static bool acc_parse(void *self, void *input);
 static bool stop_parse(void *self, void *input);
+static bool bound_parse(void *self, void *input);
 
 static struct capture captures[] = {
 	[UU_MESSAGE_ACC] = {
@@ -37,6 +38,10 @@ static struct capture captures[] = {
 	[UU_MESSAGE_STOP_ACC] = {
 		.typeinfo = "N18uu_router_messages7StopAccE",
 		.wrapper = stop_parse,
+	},
+	[UU_MESSAGE_BOUND_USER] = {
+		.typeinfo = "N18uu_router_messages9BoundUserE",
+		.wrapper = bound_parse,
 	},
 };
 
@@ -86,6 +91,11 @@ static bool acc_parse(void *self, void *input)
 static bool stop_parse(void *self, void *input)
 {
 	return dispatch(UU_MESSAGE_STOP_ACC, self, input);
+}
+
+static bool bound_parse(void *self, void *input)
+{
+	return dispatch(UU_MESSAGE_BOUND_USER, self, input);
 }
 
 static void install(struct capture *capture)
