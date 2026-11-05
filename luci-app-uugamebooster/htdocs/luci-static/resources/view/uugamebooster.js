@@ -2,14 +2,15 @@
 
 'use strict';
 'require form';
+'require fs';
 'require poll';
 'require rpc';
 'require uci';
 'require view';
 
 const callServiceList = rpc.declare({ object: 'service', method: 'list', params: ['name'], expect: { '': {} } });
-const callDevices = rpc.declare({ object: 'luci.uugamebooster', method: 'devices', reject: true });
 const callDHCPLeases = rpc.declare({ object: 'luci-rpc', method: 'getDHCPLeases', params: ['family'], reject: true });
+const callDevices = () => fs.read('/var/run/uugamebooster.status').then(JSON.parse);
 
 const deviceTypes = {
 	ally: 'ROG Ally',
@@ -53,16 +54,19 @@ function isRunning(services) {
 function renderStatus(isRunning) {
 	var spanTemp = '<span style="color:%s"><strong>%s %s</strong></span>';
 	var renderHTML;
+
 	if (isRunning) {
 		renderHTML = spanTemp.format('green', _('UU GameAcc'), _('RUNNING'));
 	} else {
 		renderHTML = spanTemp.format('red', _('UU GameAcc'), _('NOT RUNNING'));
 	}
+
 	return renderHTML;
 }
 
 function configuredType(mac) {
 	var sections = uci.sections('uugamebooster', 'device_type');
+
 	return sections.find(function(section) {
 		return (section.mac || '').toUpperCase() === mac;
 	});
@@ -70,45 +74,123 @@ function configuredType(mac) {
 
 function setDeviceType(mac, type) {
 	var section = configuredType(mac);
+
 	if (!type) {
 		if (section) {
 			uci.remove('uugamebooster', section['.name']);
 		}
+
 		return;
 	}
+
 	var id = section ? section['.name'] : uci.add('uugamebooster', 'device_type');
+
 	uci.set('uugamebooster', id, 'mac', mac);
 	uci.set('uugamebooster', id, 'type', type);
 }
 
+function deviceRow(mac) {
+	var selected = configuredType(mac);
+	var options = [ E('option', { value: '', selected: !selected ? '' : null }, _('(Default)')) ];
+
+	Object.keys(deviceTypes).forEach(function(type) {
+		options.push(E('option', { value: type, selected: selected && selected.type === type ? '' : null }, deviceTypes[type]));
+	});
+
+	var select = E('select', { class: 'cbi-input-select', change: function(ev) {
+		setDeviceType(mac, ev.target.value);
+	} }, options);
+
+	return E('tr', { class: 'tr', 'data-device-mac': mac }, [
+		E('td', { class: 'td device-info', 'data-title': _('Device') }),
+		E('td', { class: 'td', 'data-title': _('Device type') }, select),
+		E('td', { class: 'td device-status', 'data-title': _('Acceleration') })
+	]);
+}
+
 function updateStatus(table, data) {
 	var online = data[0] && data[0].dhcp_leases;
-	var accelerated = data[1] && data[1].addresses;
+	var accelerated = data[1] && data[1].devices;
+	var leasesReady = Array.isArray(online);
+	var statusReady = Array.isArray(accelerated);
 	var running = isRunning(data[2]);
 	var service = document.getElementById('service_status');
-	if (service) {
-		service.innerHTML = renderStatus(running);
+
+	if (service) service.innerHTML = renderStatus(running);
+	if (!table) return;
+
+	var hosts = {};
+
+	if (running && statusReady) {
+		accelerated.forEach(function(item) {
+			if (!item.mac) return;
+
+			hosts[item.mac.toUpperCase()] = { name: item.hostname, ip: item.ip, detail: item };
+		});
 	}
-	if (!table) {
-		return;
+
+	if (leasesReady) {
+		online.forEach(function(item) {
+			if (!item.macaddr) return;
+
+			var mac = item.macaddr.toUpperCase();
+			var host = hosts[mac] || (hosts[mac] = {});
+
+			host.name = item.hostname || host.name;
+			host.ip = item.ipaddr || host.ip;
+			host.online = true;
+		});
 	}
+
+	uci.sections('uugamebooster', 'device_type').forEach(function(section) {
+		if (!section.mac) return;
+
+		var mac = section.mac.toUpperCase();
+		hosts[mac] = hosts[mac] || {};
+	});
+
+	var rows = {};
 
 	Array.from(table.querySelectorAll('[data-device-mac]')).forEach(function(row) {
 		var mac = row.getAttribute('data-device-mac');
-		var device = Array.isArray(online) && online.find(function(item) { return item.macaddr && item.macaddr.toUpperCase() === mac; });
-		var status = row.querySelector('.device-status');
-		if (!Array.isArray(online)) {
-			status.textContent = _('Unknown');
-		} else if (!device) {
-			status.textContent = _('Offline');
-		} else if (!running) {
-			status.textContent = _('Not accelerating');
-		} else if (!Array.isArray(accelerated)) {
-			status.textContent = _('Unknown');
+
+		if (!hosts[mac] && leasesReady && (statusReady || !running)) {
+			row.remove();
 		} else {
-			status.textContent = accelerated.includes(device.ipaddr) ? _('Accelerating') : _('Not accelerating');
+			rows[mac] = row;
+			hosts[mac] = hosts[mac] || {};
 		}
 	});
+
+	var placeholder = table.querySelector('.placeholder');
+	if (placeholder) placeholder.remove();
+
+	Object.keys(hosts).sort().forEach(function(mac) {
+		var host = hosts[mac];
+		var row = rows[mac];
+
+		if (!row) {
+			row = deviceRow(mac);
+			table.appendChild(row);
+		}
+
+		row.querySelector('.device-info').replaceChildren(host.name || mac, E('br'), host.ip || '-');
+
+		var status = row.querySelector('.device-status');
+		var detail = host.detail;
+
+		if (running && detail) {
+			status.textContent = '%s %s'.format(detail.game, detail.zone);
+		} else if (running && leasesReady && !host.online) {
+			status.textContent = _('Offline');
+		} else {
+			status.textContent = _('Not accelerating');
+		}
+	});
+
+	if (!Object.keys(hosts).length) {
+		table.appendChild(E('tr', { class: 'tr placeholder' }, E('td', { class: 'td', colspan: 3 }, _('No devices.'))));
+	}
 }
 
 return view.extend({
@@ -118,30 +200,15 @@ return view.extend({
 
 	render: function(data) {
 		var m, s, o;
-		var hosts = {};
-		var leases = data[1][0] && data[1][0].dhcp_leases;
-		if (Array.isArray(leases)) {
-			leases.forEach(function(item) {
-				if (!item.macaddr || !item.ipaddr) {
-					return;
-				}
-				var mac = item.macaddr.toUpperCase();
-				hosts[mac] = { name: item.hostname || '', ip: item.ipaddr };
-			});
-		}
-		uci.sections('uugamebooster', 'device_type').forEach(function(section) {
-			if (section.mac) {
-				var mac = section.mac.toUpperCase();
-				hosts[mac] = hosts[mac] || { name: '', ip: '' };
-			}
-		});
 
 		m = new form.Map('uugamebooster', _('UU Game Accelerator'), _('A Paid Game Acceleration service'));
+
 		s = m.section(form.TypedSection);
 		s.anonymous = true;
 		s.render = function() {
 			return E('div', { class: 'cbi-section' }, E('p', { id: 'service_status' }, _('Collecting data...')));
 		};
+
 		s = m.section(form.NamedSection, 'config', 'uugamebooster');
 		o = s.option(form.Flag, 'enabled', _('Enable'));
 		o.default = o.disabled;
@@ -155,32 +222,17 @@ return view.extend({
 				E('th', { class: 'th' }, _('Device type')),
 				E('th', { class: 'th' }, _('Acceleration'))
 			]) ];
-			Object.keys(hosts).sort().forEach(function(mac) {
-				var host = hosts[mac];
-				var selected = configuredType(mac);
-				var options = [ E('option', { value: '', selected: !selected ? '' : null }, _('(Default)')) ];
-				Object.keys(deviceTypes).forEach(function(type) {
-					options.push(E('option', { value: type, selected: selected && selected.type === type ? '' : null }, deviceTypes[type]));
-				});
-				var select = E('select', { class: 'cbi-input-select', change: function(ev) {
-					setDeviceType(mac, ev.target.value);
-				} }, options);
-				rows.push(E('tr', { class: 'tr', 'data-device-mac': mac }, [
-					E('td', { class: 'td', 'data-title': _('Device') }, [ host.name || mac, E('br'), host.ip || '-' ]),
-					E('td', { class: 'td', 'data-title': _('Device type') }, select),
-					E('td', { class: 'td device-status', 'data-title': _('Acceleration') }, _('Collecting data...'))
-				]));
-			});
-			if (rows.length === 1) {
-				rows.push(E('tr', { class: 'tr placeholder' }, E('td', { class: 'td', colspan: 3 }, _('No devices.'))));
-			}
+
 			return E('div', { class: 'cbi-section' }, [ E('h3', _('Devices')),
 				E('table', { class: 'table', id: 'uu_devices' }, rows) ]);
 		};
+
 		return m.render().then(function(map) {
 			var table = map.querySelector('#uu_devices');
+
 			updateStatus(table, data[1]);
 			poll.add(function() { return readStatus().then(function(status) { updateStatus(table, status); }); });
+
 			return map;
 		});
 	}

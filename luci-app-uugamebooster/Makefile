@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 PKG_LICENSE:=Apache-2.0
 
 LUCI_TITLE:=LuCI support for UUgamebooster
-LUCI_DEPENDS:=+uugamebooster +rpcd-mod-ucode +ucode-mod-rtnl
+LUCI_DEPENDS:=+uugamebooster
 LUCI_PKGARCH:=all
 
 include $(TOPDIR)/feeds/luci/luci.mk

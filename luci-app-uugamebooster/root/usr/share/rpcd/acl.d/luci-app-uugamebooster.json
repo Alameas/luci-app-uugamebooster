@@ -5,9 +5,13 @@
 			"ubus": {
 				"service": [ "list" ],
 				"luci-rpc": [ "getDHCPLeases" ],
-				"luci.uugamebooster": [ "devices" ]
+				"file": [ "read" ]
 			},
-			"uci": [ "uugamebooster" ]
+			"uci": [ "uugamebooster" ],
+			"file": {
+				"/var/run/uugamebooster.status": [ "read" ],
+				"/tmp/run/uugamebooster.status": [ "read" ]
+			}
 		},
 		"write": {
 			"uci": [ "uugamebooster" ]

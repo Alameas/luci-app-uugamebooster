@@ -1,69 +1,66 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:137
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:213
 msgid "Enable"
 msgstr "启用"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:48
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:50
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:59
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:61
 msgid "UU GameAcc"
 msgstr "UU游戏加速器"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:130
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:204
 msgid "UU Game Accelerator"
 msgstr "UU游戏加速器"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:130
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:204
 msgid "A Paid Game Acceleration service"
 msgstr "一个付费主机游戏加速器 (开启服务后，使用手机APP绑定路由器并指定加速主机)"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:134
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:162
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:209
 msgid "Collecting data..."
 msgstr "正在收集数据中..."
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:146
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:161
-msgid "Device type"
-msgstr "设备类型"
-
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:145
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:160
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:105
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:221
 msgid "Device"
 msgstr "设备"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:147
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:162
-msgid "Acceleration"
-msgstr "加速状态"
-
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:100
-msgid "Accelerating"
-msgstr "加速中"
-
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:96
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:100
-msgid "Not accelerating"
-msgstr "未加速"
-
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:168
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:226
 msgid "Devices"
 msgstr "设备列表"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:94
-msgid "Offline"
-msgstr "离线"
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:106
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:222
+msgid "Device type"
+msgstr "设备类型"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:92
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:98
-msgid "Unknown"
-msgstr "未知"
-
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:166
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:192
 msgid "No devices."
 msgstr "暂无设备。"
 
-#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:152
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:94
 msgid "(Default)"
 msgstr "（默认）"
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:107
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:223
+msgid "Acceleration"
+msgstr "加速状态"
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:187
+msgid "Not accelerating"
+msgstr "未加速"
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:185
+msgid "Offline"
+msgstr "离线"
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:59
+msgid "RUNNING"
+msgstr "运行中"
+
+#: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:61
+msgid "NOT RUNNING"
+msgstr "未运行"
