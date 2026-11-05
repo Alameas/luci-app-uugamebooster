@@ -10,7 +10,7 @@
 #include "devices.h"
 #include "uuenv.h"
 
-static struct json_object *decode_env(const char *input)
+struct json_object *uuenv_decode(const char *input)
 {
 	struct json_object *root;
 	char *decoded;
@@ -118,7 +118,7 @@ char *uuenv_merge_rules(const char *input)
 		return NULL;
 	}
 
-	root = decode_env(input);
+	root = uuenv_decode(input);
 	if (!root) {
 		return NULL;
 	}
