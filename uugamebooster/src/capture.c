@@ -29,9 +29,27 @@ struct capture {
 };
 
 #define UU_CAPTURE_TYPES(X) \
+	X(UU_MESSAGE_ECHO_REPLY, EchoReply) \
+	X(UU_MESSAGE_CONNECT_REPLY, ConnectReply) \
 	X(UU_MESSAGE_ACC, Acc) \
 	X(UU_MESSAGE_STOP_ACC, StopAcc) \
-	X(UU_MESSAGE_BOUND_USER, BoundUser)
+	X(UU_MESSAGE_UPGRADE, Upgrade) \
+	X(UU_MESSAGE_MAC_LIST, MacList) \
+	X(UU_MESSAGE_BOUND_USER, BoundUser) \
+	X(UU_MESSAGE_LOG_CTRL, LogCtrl) \
+	X(UU_MESSAGE_UNINSTALL, Uninstall) \
+	X(UU_MESSAGE_ONLINE_REPLY, OnlineReply) \
+	X(UU_MESSAGE_CONNECT_REQUEST, ConnectRequest) \
+	X(UU_MESSAGE_SERVER_PING, ServerPing) \
+	X(UU_MESSAGE_CHECK_BOUND_REPLY, CheckBoundReply) \
+	X(UU_MESSAGE_DISCONNECT, Disconnect) \
+	X(UU_MESSAGE_FENCE_MODE_CTRL, FenceModeCtrl) \
+	X(UU_MESSAGE_WOL, Wol) \
+	X(UU_MESSAGE_GT_SINGLE_PLAYER_START, GTSinglePlayerStart) \
+	X(UU_MESSAGE_GT_SINGLE_PLAYER_STOP, GTSinglePlayerStop) \
+	X(UU_MESSAGE_REMOTE_LINK_CONFIG, RemoteLinkConfig) \
+	X(UU_MESSAGE_GT_CLICK_OFFLINE, GTClickOffline) \
+	X(UU_MESSAGE_ROUTER_GATEWAY_HIJACK, RouterGatewayHijack)
 
 #define DECLARE_PARSE(type, rtti) static bool type##_parse(void *self, void *input);
 UU_CAPTURE_TYPES(DECLARE_PARSE)
@@ -46,6 +64,13 @@ static struct capture captures[] = {
 static pthread_mutex_t output_lock = PTHREAD_MUTEX_INITIALIZER;
 static __thread bool inside;
 static uu_capture_handler message_handler;
+
+static void log_type(enum uu_message_type type)
+{
+	if (type == UU_MESSAGE_ECHO_REPLY) return;
+
+	ULOG_INFO("UU message received: %u\n", (unsigned)type);
+}
 
 static void observe(enum uu_message_type type, void *self)
 {
@@ -72,9 +97,12 @@ static bool dispatch(enum uu_message_type type, void *self, void *input)
 	struct capture *capture = &captures[type];
 	bool parsed = capture->parse(self, input);
 
-	if (parsed && !inside && message_handler) {
+	if (parsed && !inside) {
 		inside = true;
-		observe(type, self);
+		log_type(type);
+
+		if (message_handler) observe(type, self);
+
 		inside = false;
 	}
 
