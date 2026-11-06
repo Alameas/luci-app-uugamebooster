@@ -30,7 +30,11 @@ enum uu_message_type {
 	UU_MESSAGE_ROUTER_GATEWAY_HIJACK = 62,
 };
 
-typedef bool (*uu_capture_handler)(enum uu_message_type type, const void *body, size_t length);
+struct ProtobufCMessage;
+
+typedef bool (*uu_capture_writeback)(void *context, const struct ProtobufCMessage *message);
+typedef bool (*uu_capture_handler)(enum uu_message_type type, const void *body, size_t length,
+				   uu_capture_writeback writeback, void *context);
 
 void uu_capture_install(uu_capture_handler handler);
 

@@ -9,12 +9,13 @@
 #include <string.h>
 
 #include "capture.h"
+#include "message_native.h"
 #include "vtable.h"
 
 #define VT_PARSE 8
 #define VT_SIZE 9
 #define VT_SERIALIZE 11
-#define MAX_BODY (1024U * 1024U)
+#define MAX_BODY UU_MESSAGE_MAX_BODY
 
 typedef bool (*parse_fn)(void *self, void *input);
 typedef int (*size_fn)(const void *self);
@@ -26,6 +27,12 @@ struct capture {
 	parse_fn parse;
 	size_fn size;
 	serialize_fn serialize;
+};
+
+struct writeback_context {
+	void *self;
+	const void *input;
+	parse_fn parse;
 };
 
 #define UU_CAPTURE_TYPES(X) \
@@ -72,20 +79,32 @@ static void log_type(enum uu_message_type type)
 	ULOG_INFO("UU message received: %u\n", (unsigned)type);
 }
 
-static void observe(enum uu_message_type type, void *self)
+static bool writeback_message(void *context, const struct ProtobufCMessage *message)
+{
+	struct writeback_context *call = context;
+
+	return uu_message_replace(call->self, call->input, call->parse, message);
+}
+
+static void observe(enum uu_message_type type, void *self, const void *input)
 {
 	const struct capture *capture = &captures[type];
+	struct writeback_context call = {
+		.self = self,
+		.input = input,
+		.parse = capture->parse,
+	};
 	int length = capture->size(self);
 	unsigned char *body;
 
-	if (length <= 0 || (unsigned)length > MAX_BODY) return;
+	if (length < 0 || (unsigned)length > MAX_BODY) return;
 
-	body = malloc((size_t)length);
+	body = malloc(length ? (size_t)length : 1);
 	if (!body) return;
 
 	if (capture->serialize(self, body) == body + length) {
 		pthread_mutex_lock(&output_lock);
-		message_handler(type, body, length);
+		message_handler(type, body, (size_t)length, writeback_message, &call);
 		pthread_mutex_unlock(&output_lock);
 	}
 
@@ -101,7 +120,7 @@ static bool dispatch(enum uu_message_type type, void *self, void *input)
 		inside = true;
 		log_type(type);
 
-		if (message_handler) observe(type, self);
+		if (message_handler) observe(type, self, input);
 
 		inside = false;
 	}
