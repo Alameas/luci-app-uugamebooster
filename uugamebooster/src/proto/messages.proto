@@ -68,3 +68,10 @@ message BoundUser {
   optional bool is_bound = 11;
   repeated MeshDeviceRecord mesh_device_whitelist = 12;
 }
+
+message CheckBoundReply {
+  optional string rid = 1;
+  optional bool is_bound = 2;
+  optional string msg = 3;
+  repeated string envs = 4;
+}

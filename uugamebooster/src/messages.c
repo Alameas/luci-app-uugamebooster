@@ -124,6 +124,18 @@ static void log_message(const char *name, const ProtobufCMessage *message)
 	}
 }
 
+static bool handle_check_bound_reply(const void *body, size_t length)
+{
+	Uu__CheckBoundReply *message = uu__check_bound_reply__unpack(NULL, length, body);
+
+	if (!message) return false;
+
+	log_message("CheckBoundReply", &message->base);
+	if (message->has_is_bound) uu_status_bound(message->is_bound);
+	uu__check_bound_reply__free_unpacked(message, NULL);
+	return true;
+}
+
 static bool handle_bound_user(const void *body, size_t length)
 {
 	Uu__BoundUser *message = uu__bound_user__unpack(NULL, length, body);
@@ -170,6 +182,8 @@ bool uu_messages_handle(enum uu_message_type type, const void *body, size_t leng
 		return handle_stop_acc(body, length);
 	case UU_MESSAGE_BOUND_USER:
 		return handle_bound_user(body, length);
+	case UU_MESSAGE_CHECK_BOUND_REPLY:
+		return handle_check_bound_reply(body, length);
 	default:
 		return false;
 	}

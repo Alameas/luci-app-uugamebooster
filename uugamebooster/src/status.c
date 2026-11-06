@@ -45,6 +45,24 @@ static bool publish(void)
 	return false;
 }
 
+static void ensure_state(void)
+{
+	if (state && owner == getpid()) return;
+	if (state) json_object_put(state);
+
+	state = json_object_new_object();
+	devices = json_object_new_array();
+	json_object_object_add(state, "devices", devices);
+	owner = getpid();
+}
+
+bool uu_status_bound(bool bound)
+{
+	ensure_state();
+	json_object_object_add(state, "is_bound", json_object_new_boolean(bound));
+	return publish();
+}
+
 bool uu_status_update(const Uu__Device *device, const Uu__Acc *message)
 {
 	struct json_object *d;
@@ -53,14 +71,7 @@ bool uu_status_update(const Uu__Device *device, const Uu__Acc *message)
 	mac = device ? device->mac : NULL;
 	if (!mac || !valid_mac(mac)) return false;
 
-	if (!state || owner != getpid()) {
-		if (state) json_object_put(state);
-
-		state = json_object_new_object();
-		devices = json_object_new_array();
-		json_object_object_add(state, "devices", devices);
-		owner = getpid();
-	}
+	ensure_state();
 
 	for (size_t i = 0; i < json_object_array_length(devices); i++) {
 		struct json_object *value;

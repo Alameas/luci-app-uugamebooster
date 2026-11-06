@@ -23,6 +23,7 @@ typedef struct Uu__AutoDeviceRecord Uu__AutoDeviceRecord;
 typedef struct Uu__MeshDeviceRecord Uu__MeshDeviceRecord;
 typedef struct Uu__SniIpKey Uu__SniIpKey;
 typedef struct Uu__BoundUser Uu__BoundUser;
+typedef struct Uu__CheckBoundReply Uu__CheckBoundReply;
 
 
 /* --- enums --- */
@@ -161,6 +162,21 @@ struct  Uu__BoundUser
 #define UU__BOUND_USER__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&uu__bound_user__descriptor) \
 , NULL, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0, 0, 0,NULL, 0,NULL, NULL, NULL, 0, 0, 0,NULL }
+
+
+struct  Uu__CheckBoundReply
+{
+  ProtobufCMessage base;
+  char *rid;
+  protobuf_c_boolean has_is_bound;
+  protobuf_c_boolean is_bound;
+  char *msg;
+  size_t n_envs;
+  char **envs;
+};
+#define UU__CHECK_BOUND_REPLY__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&uu__check_bound_reply__descriptor) \
+, NULL, 0, 0, NULL, 0,NULL }
 
 
 /* Uu__Device methods */
@@ -315,6 +331,25 @@ Uu__BoundUser *
 void   uu__bound_user__free_unpacked
                      (Uu__BoundUser *message,
                       ProtobufCAllocator *allocator);
+/* Uu__CheckBoundReply methods */
+void   uu__check_bound_reply__init
+                     (Uu__CheckBoundReply         *message);
+size_t uu__check_bound_reply__get_packed_size
+                     (const Uu__CheckBoundReply   *message);
+size_t uu__check_bound_reply__pack
+                     (const Uu__CheckBoundReply   *message,
+                      uint8_t             *out);
+size_t uu__check_bound_reply__pack_to_buffer
+                     (const Uu__CheckBoundReply   *message,
+                      ProtobufCBuffer     *buffer);
+Uu__CheckBoundReply *
+       uu__check_bound_reply__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   uu__check_bound_reply__free_unpacked
+                     (Uu__CheckBoundReply *message,
+                      ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
 typedef void (*Uu__Device_Closure)
@@ -341,6 +376,9 @@ typedef void (*Uu__SniIpKey_Closure)
 typedef void (*Uu__BoundUser_Closure)
                  (const Uu__BoundUser *message,
                   void *closure_data);
+typedef void (*Uu__CheckBoundReply_Closure)
+                 (const Uu__CheckBoundReply *message,
+                  void *closure_data);
 
 /* --- services --- */
 
@@ -355,6 +393,7 @@ extern const ProtobufCMessageDescriptor uu__auto_device_record__descriptor;
 extern const ProtobufCMessageDescriptor uu__mesh_device_record__descriptor;
 extern const ProtobufCMessageDescriptor uu__sni_ip_key__descriptor;
 extern const ProtobufCMessageDescriptor uu__bound_user__descriptor;
+extern const ProtobufCMessageDescriptor uu__check_bound_reply__descriptor;
 
 PROTOBUF_C__END_DECLS
 
