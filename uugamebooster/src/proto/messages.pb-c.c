@@ -412,6 +412,51 @@ void   uu__check_bound_reply__free_unpacked
   assert(message->base.descriptor == &uu__check_bound_reply__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   uu__wol__init
+                     (Uu__Wol         *message)
+{
+  static const Uu__Wol init_value = UU__WOL__INIT;
+  *message = init_value;
+}
+size_t uu__wol__get_packed_size
+                     (const Uu__Wol *message)
+{
+  assert(message->base.descriptor == &uu__wol__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t uu__wol__pack
+                     (const Uu__Wol *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &uu__wol__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t uu__wol__pack_to_buffer
+                     (const Uu__Wol *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &uu__wol__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Uu__Wol *
+       uu__wol__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Uu__Wol *)
+     protobuf_c_message_unpack (&uu__wol__descriptor,
+                                allocator, len, data);
+}
+void   uu__wol__free_unpacked
+                     (Uu__Wol *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &uu__wol__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 static const ProtobufCFieldDescriptor uu__device__field_descriptors[4] =
 {
   {
@@ -1251,5 +1296,56 @@ const ProtobufCMessageDescriptor uu__check_bound_reply__descriptor =
   uu__check_bound_reply__field_indices_by_name,
   1,  uu__check_bound_reply__number_ranges,
   (ProtobufCMessageInit) uu__check_bound_reply__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor uu__wol__field_descriptors[2] =
+{
+  {
+    "mid",
+    1,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Wol, mid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "deviceinfo",
+    2,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Wol, deviceinfo),
+    &uu__device__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned uu__wol__field_indices_by_name[] = {
+  1,   /* field[1] = deviceinfo */
+  0,   /* field[0] = mid */
+};
+static const ProtobufCIntRange uu__wol__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor uu__wol__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "uu.Wol",
+  "Wol",
+  "Uu__Wol",
+  "uu",
+  sizeof(Uu__Wol),
+  2,
+  uu__wol__field_descriptors,
+  uu__wol__field_indices_by_name,
+  1,  uu__wol__number_ranges,
+  (ProtobufCMessageInit) uu__wol__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

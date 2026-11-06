@@ -24,6 +24,7 @@ typedef struct Uu__MeshDeviceRecord Uu__MeshDeviceRecord;
 typedef struct Uu__SniIpKey Uu__SniIpKey;
 typedef struct Uu__BoundUser Uu__BoundUser;
 typedef struct Uu__CheckBoundReply Uu__CheckBoundReply;
+typedef struct Uu__Wol Uu__Wol;
 
 
 /* --- enums --- */
@@ -177,6 +178,17 @@ struct  Uu__CheckBoundReply
 #define UU__CHECK_BOUND_REPLY__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&uu__check_bound_reply__descriptor) \
 , NULL, 0, 0, NULL, 0,NULL }
+
+
+struct  Uu__Wol
+{
+  ProtobufCMessage base;
+  char *mid;
+  Uu__Device *deviceinfo;
+};
+#define UU__WOL__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&uu__wol__descriptor) \
+, NULL, NULL }
 
 
 /* Uu__Device methods */
@@ -350,6 +362,25 @@ Uu__CheckBoundReply *
 void   uu__check_bound_reply__free_unpacked
                      (Uu__CheckBoundReply *message,
                       ProtobufCAllocator *allocator);
+/* Uu__Wol methods */
+void   uu__wol__init
+                     (Uu__Wol         *message);
+size_t uu__wol__get_packed_size
+                     (const Uu__Wol   *message);
+size_t uu__wol__pack
+                     (const Uu__Wol   *message,
+                      uint8_t             *out);
+size_t uu__wol__pack_to_buffer
+                     (const Uu__Wol   *message,
+                      ProtobufCBuffer     *buffer);
+Uu__Wol *
+       uu__wol__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   uu__wol__free_unpacked
+                     (Uu__Wol *message,
+                      ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
 typedef void (*Uu__Device_Closure)
@@ -379,6 +410,9 @@ typedef void (*Uu__BoundUser_Closure)
 typedef void (*Uu__CheckBoundReply_Closure)
                  (const Uu__CheckBoundReply *message,
                   void *closure_data);
+typedef void (*Uu__Wol_Closure)
+                 (const Uu__Wol *message,
+                  void *closure_data);
 
 /* --- services --- */
 
@@ -394,6 +428,7 @@ extern const ProtobufCMessageDescriptor uu__mesh_device_record__descriptor;
 extern const ProtobufCMessageDescriptor uu__sni_ip_key__descriptor;
 extern const ProtobufCMessageDescriptor uu__bound_user__descriptor;
 extern const ProtobufCMessageDescriptor uu__check_bound_reply__descriptor;
+extern const ProtobufCMessageDescriptor uu__wol__descriptor;
 
 PROTOBUF_C__END_DECLS
 

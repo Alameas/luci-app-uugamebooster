@@ -75,3 +75,8 @@ message CheckBoundReply {
   optional string msg = 3;
   repeated string envs = 4;
 }
+
+message Wol {
+  optional string mid = 1;
+  optional Device deviceinfo = 2;
+}
