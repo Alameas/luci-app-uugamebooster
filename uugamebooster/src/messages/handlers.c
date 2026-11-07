@@ -3,7 +3,10 @@
 #include "internal.h"
 
 const struct uu_message_handler uu_message_handlers[] = {
-	[UU_MESSAGE_CONNECT] = { .descriptor = &uu__connect__descriptor },
+	[UU_MESSAGE_CONNECT] = {
+		.descriptor = &uu__connect__descriptor,
+		.send = uu_messages_handle_connect_send,
+	},
 	[UU_MESSAGE_ACC] = {
 		.descriptor = &uu__acc__descriptor,
 		.receive = uu_messages_handle_acc_receive,

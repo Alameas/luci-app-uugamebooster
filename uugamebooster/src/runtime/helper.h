@@ -15,5 +15,6 @@ __attribute__((visibility("hidden"))) bool valid_regex(const char *pattern, char
 __attribute__((visibility("hidden"))) bool str_array_contains(char *const *rules, size_t count, const char *rule);
 __attribute__((visibility("hidden"))) void str_array_free(char **rules, size_t count);
 __attribute__((visibility("hidden"))) bool is_uugamebooster(void);
+__attribute__((visibility("hidden"))) const char *uu_helper_hostname(void);
 
 #endif

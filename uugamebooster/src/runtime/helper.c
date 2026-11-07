@@ -142,4 +142,14 @@ bool is_uugamebooster(void)
 	return !strcmp(exe, "/usr/bin/uugamebooster");
 }
 
+const char *uu_helper_hostname(void)
+{
+	static char hostname[128];
+
+	if (gethostname(hostname, sizeof(hostname) - 1)) return NULL;
+
+	hostname[sizeof(hostname) - 1] = '\0';
+	return hostname[0] ? hostname : NULL;
+}
+
 
