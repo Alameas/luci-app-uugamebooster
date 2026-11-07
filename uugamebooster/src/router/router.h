@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "../config.h"
+#include "../config/config.h"
 
 struct uu_router_device {
 	struct device_type type;

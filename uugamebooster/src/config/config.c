@@ -7,7 +7,7 @@
 #include <uci.h>
 
 #include "config.h"
-#include "helper.h"
+#include "../runtime/helper.h"
 #include "sni_rules.h"
 
 static struct device_type *list;

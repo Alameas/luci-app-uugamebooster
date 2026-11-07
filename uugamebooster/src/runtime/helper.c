@@ -141,3 +141,5 @@ bool is_uugamebooster(void)
 	exe[len] = '\0';
 	return !strcmp(exe, "/usr/bin/uugamebooster");
 }
+
+

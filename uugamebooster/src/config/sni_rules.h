@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "proto/messages.pb-c.h"
+#include "../proto/messages.pb-c.h"
 
 #define UU_SNI_MAX_RULES 32
 #define UU_SNI_RULE_SIZE 254

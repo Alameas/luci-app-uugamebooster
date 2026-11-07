@@ -15,7 +15,7 @@
 #include <sys/socket.h>
 
 #include "router.h"
-#include "../helper.h"
+#include "../runtime/helper.h"
 
 static struct nft_ctx *nft;
 static _Thread_local bool opening_nat;

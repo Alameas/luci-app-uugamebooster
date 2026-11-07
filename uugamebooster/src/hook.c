@@ -1,9 +1,9 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
 
-#include "capture.h"
-#include "config.h"
-#include "helper.h"
-#include "messages.h"
+#include "capture/capture.h"
+#include "config/config.h"
+#include "runtime/helper.h"
+#include "messages/messages.h"
 #include "router/router.h"
 
 __attribute__((constructor)) static void hook_init(void)

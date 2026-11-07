@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "helper.h"
+#include "../runtime/helper.h"
 #include "sni_rules.h"
 
 static const char domain_chars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-";

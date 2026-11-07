@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include "message_log.h"
-#include "uuenv.h"
+#include "../config/uuenv.h"
 
 static void log_message(const char *name, const ProtobufCMessage *message);
 

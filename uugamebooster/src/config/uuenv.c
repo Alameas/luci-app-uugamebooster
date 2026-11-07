@@ -9,7 +9,7 @@
 #include <strings.h>
 
 #include "config.h"
-#include "router/router.h"
+#include "../router/router.h"
 #include "uuenv.h"
 
 struct json_object *uuenv_decode(const char *input)
