@@ -1,6 +1,10 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
 
+#include <arpa/inet.h>
 #include <ctype.h>
+#include <errno.h>
+#include <regex.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -43,6 +47,70 @@ bool valid_type(const char *type)
 	}
 
 	return false;
+}
+
+bool valid_regex(const char *pattern, char *error, size_t size)
+{
+	regex_t regex;
+	int result;
+
+	result = regcomp(&regex, pattern, REG_EXTENDED | REG_NOSUB);
+	if (result) {
+		regerror(result, &regex, error, size);
+		return false;
+	}
+
+	regfree(&regex);
+	if (size) error[0] = '\0';
+
+	return true;
+}
+
+bool valid_ipv4_list(const char *addresses)
+{
+	char address[INET_ADDRSTRLEN];
+	struct in_addr ip;
+
+	for (;;) {
+		size_t length = strcspn(addresses, ",");
+
+		if (!length || length >= sizeof(address)) return false;
+
+		memcpy(address, addresses, length);
+		address[length] = '\0';
+		if (inet_pton(AF_INET, address, &ip) != 1) return false;
+		if (!addresses[length]) return true;
+
+		addresses += length + 1;
+	}
+}
+
+bool valid_port(const char *text)
+{
+	char *end;
+	unsigned long port;
+
+	if (*text < '0' || *text > '9') return false;
+
+	errno = 0;
+	port = strtoul(text, &end, 10);
+
+	return !errno && !*end && port > 0 && port <= 65535;
+}
+
+bool str_array_contains(char *const *rules, size_t count, const char *rule)
+{
+	for (size_t i = 0; i < count; i++) {
+		if (!strcmp(rules[i], rule)) return true;
+	}
+
+	return false;
+}
+
+void str_array_free(char **rules, size_t count)
+{
+	for (size_t i = 0; i < count; i++) free(rules[i]);
+	free(rules);
 }
 
 bool is_uugamebooster(void)
