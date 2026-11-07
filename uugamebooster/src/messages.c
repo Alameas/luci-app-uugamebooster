@@ -13,6 +13,11 @@
 static void handle_acc(ProtobufCMessage *base, bool *modified)
 {
 	Uu__Acc *message = (Uu__Acc *)base;
+
+	if (!uu_config_load_sni_rules()) {
+		ULOG_ERR("UU SNI: could not load rules before Acc\n");
+	}
+
 	int changed = uu_sni_rules_apply(uu_config_sni_rules(), message);
 
 	if (changed < 0) {
