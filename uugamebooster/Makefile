@@ -34,7 +34,7 @@ define Package/uugamebooster
   SECTION:=net
   CATEGORY:=Network
   DEPENDS:=@(aarch64||arm||mipsel) +kmod-tun +iptables-nft \
-    +libstdcpp +libgcc +libuci +libubox +libjson-c +libprotobuf-c
+    +libstdcpp +libgcc +libuci +libubox +libubus +libjson-c +libprotobuf-c
   TITLE:=NetEase UU Game Booster
   URL:=https://uu.163.com
 endef
@@ -47,7 +47,7 @@ define Build/Compile
 	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) \
 		-fPIC -shared -o $(PKG_BUILD_DIR)/libuugameboosterhelper.so \
 		$(wildcard $(CURDIR)/src/*.c $(CURDIR)/src/*/*.c) \
-		-luci -lubox -ljson-c -lprotobuf-c -ldl
+		-luci -lubox -lubus -ljson-c -lprotobuf-c -ldl
 endef
 
 define Package/uugamebooster/conffiles
