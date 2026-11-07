@@ -5,25 +5,39 @@
 #include <strings.h>
 #include <uci.h>
 
-#include "devices.h"
+#include "config.h"
 #include "helper.h"
 
 static struct device_type *list;
 static size_t count;
 
-void uu_devices_load(void)
+static struct uci_context *config_open(struct uci_package **package)
+{
+	struct uci_context *ctx = uci_alloc_context();
+
+	*package = NULL;
+	if (!ctx) return NULL;
+
+	if (uci_load(ctx, "uugamebooster", package) != UCI_OK) {
+		uci_free_context(ctx);
+		return NULL;
+	}
+
+	return ctx;
+}
+
+void uu_config_load_devices(void)
 {
 	struct uci_context *ctx;
-	struct uci_package *package = NULL;
+	struct uci_package *package;
 	struct uci_element *element;
 
 	free(list);
 	list = NULL;
 	count = 0;
 
-	ctx = uci_alloc_context();
+	ctx = config_open(&package);
 	if (!ctx) return;
-	if (uci_load(ctx, "uugamebooster", &package) != UCI_OK) goto out;
 
 	uci_foreach_element(&package->sections, element)
 	{
@@ -53,11 +67,10 @@ void uu_devices_load(void)
 		count++;
 	}
 
-out:
 	uci_free_context(ctx);
 }
 
-const struct device_type *uu_devices(size_t *device_count)
+const struct device_type *uu_config_devices(size_t *device_count)
 {
 	if (device_count) *device_count = count;
 

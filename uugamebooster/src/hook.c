@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "capture.h"
-#include "devices.h"
+#include "config.h"
 #include "helper.h"
 #include "messages.h"
 #include "uuenv.h"
@@ -64,6 +64,6 @@ __attribute__((constructor)) static void hook_init(void)
 {
 	if (!is_uugamebooster()) return;
 
-	uu_devices_load();
+	uu_config_load_devices();
 	uu_capture_install(uu_messages_handle);
 }

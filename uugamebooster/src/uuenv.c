@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "devices.h"
+#include "config.h"
 #include "uuenv.h"
 
 struct json_object *uuenv_decode(const char *input)
@@ -111,7 +111,7 @@ char *uuenv_merge_rules(const char *input)
 {
 	struct json_object *root, *rules, *merged;
 	size_t device_count;
-	const struct device_type *devices = uu_devices(&device_count);
+	const struct device_type *devices = uu_config_devices(&device_count);
 	char *encoded = NULL;
 
 	if (!device_count) {
