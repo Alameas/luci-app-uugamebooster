@@ -12,6 +12,7 @@
 
 static struct device_type *list;
 static size_t count;
+static bool router_enabled;
 static struct uu_sni_rules sni_rules;
 
 static struct uci_context *config_open(struct uci_package **package)
@@ -38,6 +39,7 @@ void uu_config_load_devices(void)
 	free(list);
 	list = NULL;
 	count = 0;
+	router_enabled = false;
 
 	ctx = config_open(&package);
 	if (!ctx) return;
@@ -49,6 +51,11 @@ void uu_config_load_devices(void)
 		const char *mac, *type;
 		size_t i;
 
+		if (!strcmp(section->e.name, "config")) {
+			const char *value = uci_lookup_option_string(ctx, section, "router_device");
+
+			router_enabled = value && !strcmp(value, "1");
+		}
 		if (strcmp(section->type, "device_type")) continue;
 
 		mac = uci_lookup_option_string(ctx, section, "mac");
@@ -78,6 +85,11 @@ const struct device_type *uu_config_devices(size_t *device_count)
 	if (device_count) *device_count = count;
 
 	return list;
+}
+
+bool uu_config_router_enabled(void)
+{
+	return router_enabled;
 }
 
 bool uu_config_load_sni_rules(void)
