@@ -64,3 +64,6 @@ msgstr ""
 #: applications/luci-app-uugamebooster/htdocs/luci-static/resources/view/uugamebooster.js:61
 msgid "NOT RUNNING"
 msgstr ""
+
+msgid "Show router device"
+msgstr ""
