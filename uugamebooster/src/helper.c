@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <ctype.h>
 #include <errno.h>
+#include <net/if.h>
 #include <regex.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,6 +48,20 @@ bool valid_type(const char *type)
 	}
 
 	return false;
+}
+
+bool valid_interface_name(const char *name)
+{
+	size_t length = name ? strnlen(name, IF_NAMESIZE) : 0;
+
+	if (!length || length == IF_NAMESIZE) return false;
+	for (size_t i = 0; i < length; i++) {
+		unsigned char c = (unsigned char)name[i];
+
+		if (c > 0x7f || (!isalnum(c) && !strchr("_.-", c))) return false;
+	}
+
+	return true;
 }
 
 bool valid_regex(const char *pattern, char *error, size_t size)

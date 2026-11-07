@@ -8,6 +8,7 @@
 
 __attribute__((visibility("hidden"))) bool valid_mac(const char *mac);
 __attribute__((visibility("hidden"))) bool valid_type(const char *type);
+__attribute__((visibility("hidden"))) bool valid_interface_name(const char *name);
 __attribute__((visibility("hidden"))) bool valid_ipv4_list(const char *addresses);
 __attribute__((visibility("hidden"))) bool valid_port(const char *text);
 __attribute__((visibility("hidden"))) bool valid_regex(const char *pattern, char *error, size_t size);
