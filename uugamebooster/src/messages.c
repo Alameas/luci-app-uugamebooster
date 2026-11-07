@@ -1,12 +1,14 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
 
 #include <libubox/ulog.h>
+#include <stdlib.h>
 
 #include "config.h"
 #include "message_log.h"
 #include "messages.h"
 #include "sni_rules.h"
 #include "status.h"
+#include "uuenv.h"
 
 static void handle_acc(ProtobufCMessage *base, bool *modified)
 {
@@ -16,6 +18,21 @@ static void handle_acc(ProtobufCMessage *base, bool *modified)
 	if (changed < 0) {
 		ULOG_ERR("UU Acc: could not apply SNI rules, original retained\n");
 	} else if (changed > 0) {
+		*modified = true;
+	}
+}
+
+static void handle_bound_user(ProtobufCMessage *base, bool *modified)
+{
+	Uu__BoundUser *message = (Uu__BoundUser *)base;
+
+	for (size_t i = 0; i < message->n_hostname_blacklist; i++) {
+		char *merged = uuenv_merge_rules(message->hostname_blacklist[i]);
+
+		if (!merged) continue;
+
+		free(message->hostname_blacklist[i]);
+		message->hostname_blacklist[i] = merged;
 		*modified = true;
 	}
 }
@@ -31,7 +48,10 @@ static const struct message_handler handlers[] = {
 		.handle = handle_acc,
 	},
 	[UU_MESSAGE_STOP_ACC] = { .descriptor = &uu__stop_acc__descriptor },
-	[UU_MESSAGE_BOUND_USER] = { .descriptor = &uu__bound_user__descriptor },
+	[UU_MESSAGE_BOUND_USER] = {
+		.descriptor = &uu__bound_user__descriptor,
+		.handle = handle_bound_user,
+	},
 	[UU_MESSAGE_CHECK_BOUND_REPLY] = { .descriptor = &uu__check_bound_reply__descriptor },
 	[UU_MESSAGE_WOL] = { .descriptor = &uu__wol__descriptor },
 };
