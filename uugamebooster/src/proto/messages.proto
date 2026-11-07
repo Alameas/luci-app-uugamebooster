@@ -9,6 +9,29 @@ message Device {
   optional string type = 4;
 }
 
+message Connect {
+  optional string mid = 1;
+  optional string type = 2;
+  optional string sn = 3;
+  optional string version = 4;
+  optional string name = 5;
+  optional string model = 6;
+  optional uint32 firmware_version_code = 7;
+  optional string firmware_version_name = 8;
+  optional string ssid = 9;
+  optional string device_type = 10;
+  optional string whoami = 11;
+  optional string mode_local = 12;
+  optional string plugin_type = 14;
+  optional string real_sn = 15;
+  optional string firmware_type = 16;
+  optional string router_info = 17;
+  optional uint32 wan_ip = 18;
+  optional uint32 wan_port_speed = 19;
+  optional string debug_whoami_ip = 20;
+  optional string ssid_5g = 21;
+}
+
 message Acc {
   optional string mid = 1;
   optional Device deviceinfo = 2;

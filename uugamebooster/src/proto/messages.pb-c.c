@@ -52,6 +52,51 @@ void   uu__device__free_unpacked
   assert(message->base.descriptor == &uu__device__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   uu__connect__init
+                     (Uu__Connect         *message)
+{
+  static const Uu__Connect init_value = UU__CONNECT__INIT;
+  *message = init_value;
+}
+size_t uu__connect__get_packed_size
+                     (const Uu__Connect *message)
+{
+  assert(message->base.descriptor == &uu__connect__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t uu__connect__pack
+                     (const Uu__Connect *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &uu__connect__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t uu__connect__pack_to_buffer
+                     (const Uu__Connect *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &uu__connect__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Uu__Connect *
+       uu__connect__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Uu__Connect *)
+     protobuf_c_message_unpack (&uu__connect__descriptor,
+                                allocator, len, data);
+}
+void   uu__connect__free_unpacked
+                     (Uu__Connect *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &uu__connect__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 void   uu__acc__init
                      (Uu__Acc         *message)
 {
@@ -532,6 +577,292 @@ const ProtobufCMessageDescriptor uu__device__descriptor =
   uu__device__field_indices_by_name,
   1,  uu__device__number_ranges,
   (ProtobufCMessageInit) uu__device__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor uu__connect__field_descriptors[20] =
+{
+  {
+    "mid",
+    1,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, mid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "type",
+    2,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, type),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "sn",
+    3,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, sn),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "version",
+    4,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, version),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "name",
+    5,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, name),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "model",
+    6,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, model),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "firmware_version_code",
+    7,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_UINT32,
+    offsetof(Uu__Connect, has_firmware_version_code),
+    offsetof(Uu__Connect, firmware_version_code),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "firmware_version_name",
+    8,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, firmware_version_name),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ssid",
+    9,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, ssid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "device_type",
+    10,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, device_type),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "whoami",
+    11,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, whoami),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "mode_local",
+    12,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, mode_local),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "plugin_type",
+    14,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, plugin_type),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "real_sn",
+    15,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, real_sn),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "firmware_type",
+    16,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, firmware_type),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "router_info",
+    17,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, router_info),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "wan_ip",
+    18,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_UINT32,
+    offsetof(Uu__Connect, has_wan_ip),
+    offsetof(Uu__Connect, wan_ip),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "wan_port_speed",
+    19,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_UINT32,
+    offsetof(Uu__Connect, has_wan_port_speed),
+    offsetof(Uu__Connect, wan_port_speed),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "debug_whoami_ip",
+    20,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, debug_whoami_ip),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ssid_5g",
+    21,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Uu__Connect, ssid_5g),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned uu__connect__field_indices_by_name[] = {
+  18,   /* field[18] = debug_whoami_ip */
+  9,   /* field[9] = device_type */
+  14,   /* field[14] = firmware_type */
+  6,   /* field[6] = firmware_version_code */
+  7,   /* field[7] = firmware_version_name */
+  0,   /* field[0] = mid */
+  11,   /* field[11] = mode_local */
+  5,   /* field[5] = model */
+  4,   /* field[4] = name */
+  12,   /* field[12] = plugin_type */
+  13,   /* field[13] = real_sn */
+  15,   /* field[15] = router_info */
+  2,   /* field[2] = sn */
+  8,   /* field[8] = ssid */
+  19,   /* field[19] = ssid_5g */
+  1,   /* field[1] = type */
+  3,   /* field[3] = version */
+  16,   /* field[16] = wan_ip */
+  17,   /* field[17] = wan_port_speed */
+  10,   /* field[10] = whoami */
+};
+static const ProtobufCIntRange uu__connect__number_ranges[2 + 1] =
+{
+  { 1, 0 },
+  { 14, 12 },
+  { 0, 20 }
+};
+const ProtobufCMessageDescriptor uu__connect__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "uu.Connect",
+  "Connect",
+  "Uu__Connect",
+  "uu",
+  sizeof(Uu__Connect),
+  20,
+  uu__connect__field_descriptors,
+  uu__connect__field_indices_by_name,
+  2,  uu__connect__number_ranges,
+  (ProtobufCMessageInit) uu__connect__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
 static const ProtobufCFieldDescriptor uu__acc__field_descriptors[15] =

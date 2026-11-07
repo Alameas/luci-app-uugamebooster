@@ -16,6 +16,7 @@ PROTOBUF_C__BEGIN_DECLS
 
 
 typedef struct Uu__Device Uu__Device;
+typedef struct Uu__Connect Uu__Connect;
 typedef struct Uu__Acc Uu__Acc;
 typedef struct Uu__StopAcc Uu__StopAcc;
 typedef struct Uu__DeviceRecord Uu__DeviceRecord;
@@ -44,6 +45,38 @@ struct  Uu__Device
 #define UU__DEVICE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&uu__device__descriptor) \
 , 0, 0, NULL, NULL, NULL }
+
+
+struct  Uu__Connect
+{
+  ProtobufCMessage base;
+  char *mid;
+  char *type;
+  char *sn;
+  char *version;
+  char *name;
+  char *model;
+  protobuf_c_boolean has_firmware_version_code;
+  uint32_t firmware_version_code;
+  char *firmware_version_name;
+  char *ssid;
+  char *device_type;
+  char *whoami;
+  char *mode_local;
+  char *plugin_type;
+  char *real_sn;
+  char *firmware_type;
+  char *router_info;
+  protobuf_c_boolean has_wan_ip;
+  uint32_t wan_ip;
+  protobuf_c_boolean has_wan_port_speed;
+  uint32_t wan_port_speed;
+  char *debug_whoami_ip;
+  char *ssid_5g;
+};
+#define UU__CONNECT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&uu__connect__descriptor) \
+, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL }
 
 
 struct  Uu__Acc
@@ -209,6 +242,25 @@ Uu__Device *
                       const uint8_t       *data);
 void   uu__device__free_unpacked
                      (Uu__Device *message,
+                      ProtobufCAllocator *allocator);
+/* Uu__Connect methods */
+void   uu__connect__init
+                     (Uu__Connect         *message);
+size_t uu__connect__get_packed_size
+                     (const Uu__Connect   *message);
+size_t uu__connect__pack
+                     (const Uu__Connect   *message,
+                      uint8_t             *out);
+size_t uu__connect__pack_to_buffer
+                     (const Uu__Connect   *message,
+                      ProtobufCBuffer     *buffer);
+Uu__Connect *
+       uu__connect__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   uu__connect__free_unpacked
+                     (Uu__Connect *message,
                       ProtobufCAllocator *allocator);
 /* Uu__Acc methods */
 void   uu__acc__init
@@ -386,6 +438,9 @@ void   uu__wol__free_unpacked
 typedef void (*Uu__Device_Closure)
                  (const Uu__Device *message,
                   void *closure_data);
+typedef void (*Uu__Connect_Closure)
+                 (const Uu__Connect *message,
+                  void *closure_data);
 typedef void (*Uu__Acc_Closure)
                  (const Uu__Acc *message,
                   void *closure_data);
@@ -420,6 +475,7 @@ typedef void (*Uu__Wol_Closure)
 /* --- descriptors --- */
 
 extern const ProtobufCMessageDescriptor uu__device__descriptor;
+extern const ProtobufCMessageDescriptor uu__connect__descriptor;
 extern const ProtobufCMessageDescriptor uu__acc__descriptor;
 extern const ProtobufCMessageDescriptor uu__stop_acc__descriptor;
 extern const ProtobufCMessageDescriptor uu__device_record__descriptor;
