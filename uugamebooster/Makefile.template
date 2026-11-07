@@ -51,6 +51,7 @@ define Build/Compile
 endef
 
 define Package/uugamebooster/conffiles
+/etc/config/uugamebooster
 /usr/share/uugamebooster/uu.conf
 endef
 
