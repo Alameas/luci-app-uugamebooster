@@ -2,9 +2,23 @@
 
 #include <libubox/ulog.h>
 
+#include "config.h"
 #include "message_log.h"
 #include "messages.h"
+#include "sni_rules.h"
 #include "status.h"
+
+static void handle_acc(ProtobufCMessage *base, bool *modified)
+{
+	Uu__Acc *message = (Uu__Acc *)base;
+	int changed = uu_sni_rules_apply(uu_config_sni_rules(), message);
+
+	if (changed < 0) {
+		ULOG_ERR("UU Acc: could not apply SNI rules, original retained\n");
+	} else if (changed > 0) {
+		*modified = true;
+	}
+}
 
 struct message_handler {
 	const ProtobufCMessageDescriptor *descriptor;
@@ -12,7 +26,10 @@ struct message_handler {
 };
 
 static const struct message_handler handlers[] = {
-	[UU_MESSAGE_ACC] = { .descriptor = &uu__acc__descriptor },
+	[UU_MESSAGE_ACC] = {
+		.descriptor = &uu__acc__descriptor,
+		.handle = handle_acc,
+	},
 	[UU_MESSAGE_STOP_ACC] = { .descriptor = &uu__stop_acc__descriptor },
 	[UU_MESSAGE_BOUND_USER] = { .descriptor = &uu__bound_user__descriptor },
 	[UU_MESSAGE_CHECK_BOUND_REPLY] = { .descriptor = &uu__check_bound_reply__descriptor },

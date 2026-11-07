@@ -65,5 +65,7 @@ __attribute__((constructor)) static void hook_init(void)
 	if (!is_uugamebooster()) return;
 
 	uu_config_load_devices();
+	uu_config_load_sni_rules();
+
 	uu_capture_install(uu_messages_handle);
 }
