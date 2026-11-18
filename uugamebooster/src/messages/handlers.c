@@ -11,10 +11,7 @@ const struct uu_message_handler uu_message_handlers[] = {
 		.descriptor = &uu__device_list__descriptor,
 		.send = uu_messages_handle_device_list_send,
 	},
-	[UU_MESSAGE_ACC] = {
-		.descriptor = &uu__acc__descriptor,
-		.receive = uu_messages_handle_acc_receive,
-	},
+	[UU_MESSAGE_ACC] = { .descriptor = &uu__acc__descriptor },
 	[UU_MESSAGE_ACC_REPLY] = { .descriptor = &uu__acc_reply__descriptor },
 	[UU_MESSAGE_STOP_ACC] = { .descriptor = &uu__stop_acc__descriptor },
 	[UU_MESSAGE_BOUND_USER] = { .descriptor = &uu__bound_user__descriptor },

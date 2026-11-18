@@ -214,10 +214,6 @@ return view.extend({
 		o.default = o.disabled;
 		o.rmempty = false;
 
-		o = s.option(form.Flag, 'router_device', _('Show router device'));
-		o.default = o.disabled;
-		o.rmempty = false;
-
 		s = m.section(form.TypedSection);
 		s.anonymous = true;
 		s.render = function() {

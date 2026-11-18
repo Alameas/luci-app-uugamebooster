@@ -6,7 +6,6 @@
 #include <libubox/ulog.h>
 
 #include "../config/config.h"
-#include "../router/router.h"
 #include "../runtime/helper.h"
 #include "message_log.h"
 #include "internal.h"
@@ -33,21 +32,9 @@ static bool override_device_type(Uu__Device *device, const struct device_type *t
 
 static bool override_device_types(Uu__DeviceList *message)
 {
-	const struct uu_router_device *router = uu_router_device_get();
 	const struct device_type *devices;
 	size_t device_count;
 	bool modified = false;
-
-	if (router) {
-		Uu__Device *device = find_device(message, router->type.mac);
-
-		if (device) {
-			modified |= override_device_type(device, &router->type);
-		} else {
-			ULOG_WARN("UU upload DeviceList: router device not found: %s\n",
-				  router->type.mac);
-		}
-	}
 
 	devices = uu_config_devices(&device_count);
 	for (size_t i = 0; i < device_count; i++) {
